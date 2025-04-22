@@ -1,0 +1,39 @@
+package com.radutodosan.appointments.entities;
+
+import com.radutodosan.appointments.enums.AppointmentStatus;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Appointment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String userUsername;
+
+    @Column(nullable = false)
+    private String mechanicUsername;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = false)
+    private LocalDateTime date;
+
+    @Column(nullable = false)
+    private AppointmentStatus status; //  PENDING, CONFIRMED, CANCELLED
+
+}
