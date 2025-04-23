@@ -8,4 +8,6 @@ import java.util.List;
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     List<Appointment> findByUserUsername(String username);
     List<Appointment> findByMechanicUsername(String username);
+
+    boolean existsByMechanicUsernameAndAppointmentDateAndAppointmentTime(String mechanicUsername, String date, String time);
 }

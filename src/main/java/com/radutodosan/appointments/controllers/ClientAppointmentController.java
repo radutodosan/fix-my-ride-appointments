@@ -44,10 +44,15 @@ public class ClientAppointmentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
 
-        // Create appointment
-        Appointment createdAppointment = appointmentService.createAppointment(appointmentRequest, clientUsername);
-        ApiResponseDTO<Appointment> response = new ApiResponseDTO<>(true, "Appointment created successfully", createdAppointment);
-        return ResponseEntity.ok(response);
+        // Check for mechanic free time slot and create appointment
+        try {
+            Appointment createdAppointment = appointmentService.createAppointment(appointmentRequest, clientUsername);
+            ApiResponseDTO<Appointment> response = new ApiResponseDTO<>(true, "Appointment created successfully", createdAppointment);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponseDTO<>(false, e.getMessage(), null));
+        }
     }
 
 

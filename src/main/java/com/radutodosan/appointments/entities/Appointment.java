@@ -37,6 +37,11 @@ public class Appointment {
     private String carDetails;
 
     @Column(nullable = false)
+    private String appointmentDate; // format: "YYYY-MM-DD"
+    @Column(nullable = false)
+    private String appointmentTime; // format: "HH:mm"
+
+    @Column(nullable = false)
     private AppointmentStatus status; //  PENDING, CONFIRMED, CANCELLED
 
 }
