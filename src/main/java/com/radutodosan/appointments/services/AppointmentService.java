@@ -6,10 +6,10 @@ import com.radutodosan.appointments.enums.AppointmentStatus;
 import com.radutodosan.appointments.repositories.AppointmentRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 public class AppointmentService {
@@ -40,11 +40,29 @@ public class AppointmentService {
         return appointmentRepository.findByUserUsername(userUsername);
     }
 
-    public Optional<Appointment> getById(Long id) {
-        return appointmentRepository.findById(id);
+    public Appointment cancelAppointmentAsClient(Long appointmentId, String userUsername) throws AccessDeniedException {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new NoSuchElementException("Appointment not found"));
+
+        if (!appointment.getUserUsername().equals(userUsername)) {
+            throw new AccessDeniedException("You are not allowed to cancel this appointment");
+        }
+
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+        return appointmentRepository.save(appointment);
     }
 
-    public void delete(Long id) {
-        appointmentRepository.deleteById(id);
+
+    public Appointment updateStatusAsMechanic(Long appointmentId, String mechanicUsername, AppointmentStatus newStatus) throws AccessDeniedException {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new NoSuchElementException("Appointment not found"));
+
+        if (!appointment.getMechanicUsername().equals(mechanicUsername)) {
+            throw new AccessDeniedException("You are not allowed to update this appointment");
+        }
+
+        appointment.setStatus(newStatus);
+        return appointmentRepository.save(appointment);
     }
+
 }

@@ -9,15 +9,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/appointments")
-public class AppointmentController {
+@RequestMapping("/appointments/user")
+
+public class ClientAppointmentController {
+
     private final AppointmentService appointmentService;
     private final AuthValidator authValidator;
 
-    public AppointmentController(AppointmentService service, AuthValidator authValidator) {
+    public ClientAppointmentController(AppointmentService service, AuthValidator authValidator) {
         this.appointmentService = service;
         this.authValidator = authValidator;
     }
@@ -27,8 +31,8 @@ public class AppointmentController {
                                     @RequestBody AppointmentRequestDTO appointmentRequest) {
 
         // Authenticate user
-        String userUsername = authValidator.getAuthenticatedUsername(token);
-        if (userUsername == null) {
+        String clientUsername = authValidator.getAuthenticatedUsername(token);
+        if (clientUsername == null) {
             ApiResponseDTO<?> error = new ApiResponseDTO<>(false, "Not authenticated as user", null);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
@@ -41,37 +45,59 @@ public class AppointmentController {
         }
 
         // Create appointment
-        Appointment createdAppointment = appointmentService.createAppointment(appointmentRequest, userUsername);
+        Appointment createdAppointment = appointmentService.createAppointment(appointmentRequest, clientUsername);
         ApiResponseDTO<Appointment> response = new ApiResponseDTO<>(true, "Appointment created successfully", createdAppointment);
         return ResponseEntity.ok(response);
     }
 
 
-    @GetMapping("/user")
+    @GetMapping("/view-appointments")
     public ResponseEntity<?> getByUser(@RequestHeader("Authorization") String token) {
 
-        String userUsername = authValidator.getAuthenticatedUsername(token);
-        if (userUsername == null) {
+        String clientUsername = authValidator.getAuthenticatedUsername(token);
+        if (clientUsername == null) {
             ApiResponseDTO<?> error = new ApiResponseDTO<>(false, "Not authenticated as user", null);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
 
-        List<Appointment> appointments = appointmentService.getAppointmentsForUser(userUsername);
+        List<Appointment> appointments = appointmentService.getAppointmentsForUser(clientUsername);
         ApiResponseDTO<List<Appointment>> response = new ApiResponseDTO<>(true, "Appointments for user retrieved", appointments);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/mechanic")
-    public ResponseEntity<?> getByMechanic(@RequestHeader("Authorization") String token) {
+    @PatchMapping("/cancel/{appointmentId}")
+    public ResponseEntity<?> cancelAppointmentAsUser(@RequestHeader("Authorization") String token,
+                                                     @PathVariable Long appointmentId) {
 
-        String mechanicUsername = authValidator.getAuthenticatedMechanic(token);
-        if (mechanicUsername == null) {
-            ApiResponseDTO<?> error = new ApiResponseDTO<>(false, "Not authenticated as mechanic", null);
+        String clientUsername = authValidator.getAuthenticatedUsername(token);
+        if (clientUsername == null) {
+            ApiResponseDTO<?> error = new ApiResponseDTO<>(false, "Not authenticated as user", null);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
 
-        List<Appointment> appointments = appointmentService.getAppointmentsForMechanic(mechanicUsername);
-        ApiResponseDTO<List<Appointment>> response = new ApiResponseDTO<>(true, "Appointments for mechanic retrieved", appointments);
-        return ResponseEntity.ok(response);
+        try {
+            Appointment cancelled = appointmentService.cancelAppointmentAsClient(appointmentId, clientUsername);
+            ApiResponseDTO<Appointment> response = new ApiResponseDTO<>(
+                    true,
+                    "Appointment cancelled successfully",
+                    cancelled
+            );
+
+            return ResponseEntity.ok(response);
+
+        } catch (NoSuchElementException e) {
+            ApiResponseDTO<?> error = new ApiResponseDTO<>(false, e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+
+        } catch (AccessDeniedException e) {
+            ApiResponseDTO<?> error = new ApiResponseDTO<>(false, e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+
+        } catch (Exception e) {
+            ApiResponseDTO<?> error = new ApiResponseDTO<>(false, "Failed to cancel appointment", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
+
+
 }
