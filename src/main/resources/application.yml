@@ -22,9 +22,9 @@ spring:
     compose:
       enabled: false
 
-users:
+clients:
   service:
-    url: ${USERS_URL}
+    url: ${CLIENTS_URL}
 
 mechanics:
   service:

@@ -17,8 +17,8 @@ public class AuthValidator {
 
     private final RestTemplate restTemplate;
 
-    @Value("${users.service.url}")
-    private String usersServiceUrl;
+    @Value("${clients.service.url}")
+    private String clientsServiceUrl;
 
     @Value("${mechanics.service.url}")
     private String mechanicsServiceUrl;
@@ -34,7 +34,7 @@ public class AuthValidator {
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
             ResponseEntity<Map> response = restTemplate.exchange(
-                    usersServiceUrl + "/auth/users/me", HttpMethod.GET, entity, Map.class
+                    clientsServiceUrl + "/auth/clients/me", HttpMethod.GET, entity, Map.class
             );
 
             Map<String, Object> body = response.getBody();
