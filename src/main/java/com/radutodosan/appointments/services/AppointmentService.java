@@ -27,6 +27,7 @@ public class AppointmentService {
                 .mechanicUsername(appointmentRequest.getMechanicUsername())
                 .userUsername(userUsername)
                 .date(LocalDateTime.now())
+                .carDetails(appointmentRequest.getCarDetails())
                 .status(AppointmentStatus.PENDING)
                 .build();
         return appointmentRepository.save(newAppointment);

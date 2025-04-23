@@ -34,6 +34,9 @@ public class Appointment {
     private LocalDateTime date;
 
     @Column(nullable = false)
+    private String carDetails;
+
+    @Column(nullable = false)
     private AppointmentStatus status; //  PENDING, CONFIRMED, CANCELLED
 
 }

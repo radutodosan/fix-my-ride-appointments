@@ -13,4 +13,5 @@ public class AppointmentRequestDTO {
     private String mechanicUsername;
     private String title;
     private String description;
+    private String carDetails; // comes from frontend "brand model, year"
 }
