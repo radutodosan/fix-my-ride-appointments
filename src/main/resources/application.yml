@@ -22,6 +22,9 @@ spring:
     compose:
       enabled: false
 
+  profiles:
+    active: dev
+
 clients:
   service:
     url: ${CLIENTS_URL}
