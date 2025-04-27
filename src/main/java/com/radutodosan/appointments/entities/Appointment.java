@@ -31,7 +31,7 @@ public class Appointment {
     private String description;
 
     @Column(nullable = false)
-    private LocalDateTime date;
+    private LocalDateTime date; // creation date
 
     @Column(nullable = false)
     private String carDetails;
