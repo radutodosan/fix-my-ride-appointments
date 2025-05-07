@@ -20,7 +20,7 @@ public class AppointmentService {
         this.appointmentRepository = repository;
     }
 
-    public Appointment createAppointment(AppointmentRequestDTO appointmentRequest, String userUsername) {
+    public Appointment createAppointment(AppointmentRequestDTO appointmentRequest, String clientUsername) {
 
         // Check for slot conflict
         if (isSlotTaken(appointmentRequest.getMechanicUsername(), appointmentRequest.getAppointmentDate())) {
@@ -31,7 +31,7 @@ public class AppointmentService {
                 .title(appointmentRequest.getTitle())
                 .description(appointmentRequest.getDescription())
                 .mechanicUsername(appointmentRequest.getMechanicUsername())
-                .userUsername(userUsername)
+                .clientUsername(clientUsername)
                 .date(LocalDateTime.now())
                 .appointmentDate(appointmentRequest.getAppointmentDate())
                 .carDetails(appointmentRequest.getCarDetails())
@@ -44,15 +44,15 @@ public class AppointmentService {
         return appointmentRepository.findByMechanicUsername(mechanicUsername);
     }
 
-    public List<Appointment> getAppointmentsForUser(String userUsername) {
-        return appointmentRepository.findByUserUsername(userUsername);
+    public List<Appointment> getAppointmentsForUser(String clientUsername) {
+        return appointmentRepository.findByClientUsername(clientUsername);
     }
 
-    public Appointment cancelAppointmentAsClient(Long appointmentId, String userUsername) throws AccessDeniedException {
+    public Appointment cancelAppointmentAsClient(Long appointmentId, String clientUsername) throws AccessDeniedException {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new NoSuchElementException("Appointment not found"));
 
-        if (!appointment.getUserUsername().equals(userUsername)) {
+        if (!appointment.getClientUsername() .equals(clientUsername)) {
             throw new AccessDeniedException("You are not allowed to cancel this appointment");
         }
 

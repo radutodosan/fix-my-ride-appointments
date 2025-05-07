@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    List<Appointment> findByUserUsername(String username);
+    List<Appointment> findByClientUsername(String username);
     List<Appointment> findByMechanicUsername(String username);
 
     boolean existsByMechanicUsernameAndAppointmentDate(String mechanicUsername, String date);

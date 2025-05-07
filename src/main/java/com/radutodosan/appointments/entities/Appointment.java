@@ -19,7 +19,7 @@ public class Appointment {
     private Long id;
 
     @Column(nullable = false)
-    private String userUsername;
+    private String clientUsername;
 
     @Column(nullable = false)
     private String mechanicUsername;
