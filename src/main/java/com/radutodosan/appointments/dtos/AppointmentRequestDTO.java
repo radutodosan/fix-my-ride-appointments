@@ -14,6 +14,5 @@ public class AppointmentRequestDTO {
     private String title;
     private String description;
     private String appointmentDate; // format: "YYYY-MM-DD"
-    private String appointmentTime; // format: "HH:mm"
     private String carDetails; // comes from frontend "brand model, year"
 }

@@ -23,7 +23,7 @@ public class AppointmentService {
     public Appointment createAppointment(AppointmentRequestDTO appointmentRequest, String userUsername) {
 
         // Check for slot conflict
-        if (isSlotTaken(appointmentRequest.getMechanicUsername(), appointmentRequest.getAppointmentDate(), appointmentRequest.getAppointmentTime())) {
+        if (isSlotTaken(appointmentRequest.getMechanicUsername(), appointmentRequest.getAppointmentDate())) {
             throw new IllegalArgumentException("Selected date and time are already taken for this mechanic.");
         }
 
@@ -34,7 +34,6 @@ public class AppointmentService {
                 .userUsername(userUsername)
                 .date(LocalDateTime.now())
                 .appointmentDate(appointmentRequest.getAppointmentDate())
-                .appointmentTime(appointmentRequest.getAppointmentTime())
                 .carDetails(appointmentRequest.getCarDetails())
                 .status(AppointmentStatus.PENDING)
                 .build();
@@ -74,9 +73,9 @@ public class AppointmentService {
         return appointmentRepository.save(appointment);
     }
 
-    public boolean isSlotTaken(String mechanicUsername, String date, String time) {
-        return appointmentRepository.existsByMechanicUsernameAndAppointmentDateAndAppointmentTime(
-                mechanicUsername, date, time);
+    public boolean isSlotTaken(String mechanicUsername, String date) {
+        return appointmentRepository.existsByMechanicUsernameAndAppointmentDate(
+                mechanicUsername, date);
     }
 
 }
