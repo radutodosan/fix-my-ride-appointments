@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/appointments/mechanic")
+@RequestMapping("/mechanic")
 public class MechanicAppointmentController {
     private final AppointmentService appointmentService;
     private final AuthValidator authValidator;

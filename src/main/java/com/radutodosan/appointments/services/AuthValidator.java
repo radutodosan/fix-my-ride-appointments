@@ -34,7 +34,7 @@ public class AuthValidator {
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
             ResponseEntity<Map> response = restTemplate.exchange(
-                    clientsServiceUrl + "/auth/clients/me", HttpMethod.GET, entity, Map.class
+                    clientsServiceUrl + "/auth/me", HttpMethod.GET, entity, Map.class
             );
 
             Map<String, Object> body = response.getBody();
@@ -59,7 +59,7 @@ public class AuthValidator {
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
             ResponseEntity<Map> response = restTemplate.exchange(
-                    mechanicsServiceUrl + "/auth/mechanics/me",
+                    mechanicsServiceUrl + "/auth/me",
                     HttpMethod.GET,
                     entity,
                     Map.class
@@ -81,7 +81,7 @@ public class AuthValidator {
 
     public boolean doesMechanicExist(String mechanicUsername) {
         try {
-            String url = mechanicsServiceUrl + "/mechanics/exists/" + mechanicUsername;
+            String url = mechanicsServiceUrl + "/exists/" + mechanicUsername;
 
             ResponseEntity<Map> response = restTemplate.exchange(
                     url,

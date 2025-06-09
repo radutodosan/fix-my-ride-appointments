@@ -24,7 +24,7 @@ public class AppointmentService {
 
         // Check for slot conflict
         if (isSlotTaken(appointmentRequest.getMechanicUsername(), appointmentRequest.getAppointmentDate())) {
-            throw new IllegalArgumentException("Selected date and time are already taken for this mechanic.");
+            throw new IllegalArgumentException("Selected date is already taken for this mechanic.");
         }
 
         Appointment newAppointment = Appointment.builder()
