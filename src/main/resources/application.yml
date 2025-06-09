@@ -23,7 +23,7 @@ spring:
       enabled: false
 
   profiles:
-    active: dev
+    active: prod
 
 clients:
   service:
